@@ -1,0 +1,64 @@
+{
+  "name": "freevibes",
+  "version": "0.1.1",
+  "description": "Universal MCP bridge for AI image and video generation from MCP-compatible coding agents.",
+  "license": "Apache-2.0",
+  "author": "Freevibes contributors",
+  "homepage": "https://github.com/itzmoksh01/Freevibes#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itzmoksh01/Freevibes.git"
+  },
+  "bugs": {
+    "url": "https://github.com/itzmoksh01/Freevibes/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "bin": {
+    "freevibes": "dist/install/cli.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.20.0",
+    "better-sqlite3": "^11.10.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^20.19.0",
+    "typescript": "^5.9.0",
+    "vitest": "^2.1.0"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "video-generation",
+    "image-generation",
+    "claude-code",
+    "codex",
+    "zed",
+    "muse-code"
+  ]
+}

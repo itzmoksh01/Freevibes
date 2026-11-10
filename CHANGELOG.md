@@ -1,0 +1,83 @@
+# Changelog
+
+All notable changes to this project are recorded here. The format follows
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
+adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.1.1] — 2026-11-10
+
+### Fixed
+
+- **Cross-process job corruption.** `recoverInterrupted()` ran at every process
+  start and marked *all* in-flight jobs as `interrupted`, including jobs a second
+  MCP client's live server was actively working on. Since each client spawns its
+  own server against one shared database, this could fire in normal use. Jobs now
+  carry a per-process lease (`owner_id`, `heartbeat_at`), and startup recovery
+  reclaims a job only when its lease has gone stale. A process never reclaims its
+  own live job. Requires schema migration v2.
+- **Diagnostics could mutate job state.** `freevibes doctor` and
+  `freevibes capabilities` constructed a full context, which triggered recovery.
+  A read-only command could therefore disturb a running job. Both now pass
+  `recover: false`.
+
+### Added
+
+- `FREEVIBES_JOB_STALE_MS` to tune when another process's job lease counts as
+  abandoned. Defaults to 60 s beyond `FREEVIBES_JOB_TIMEOUT_MS`, so a live job
+  can never be reclaimed before its own timeout expires.
+- `JobStore.heartbeat()` and `JobStore.countInFlight()`.
+- Schema migration v2 (additive; existing databases upgrade in place).
+- `tsconfig.test.json`; `npm run typecheck` now covers the test suite, which was
+  previously untypechecked.
+- `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`.
+- Package metadata: `repository`, `homepage`, `bugs`, `author`.
+- Installer now lists every supported client when no client config is found,
+  instead of showing only manual entries.
+
+### Changed
+
+- **Renamed the project to Freevibes.** The package name, CLI binary, MCP server
+  name, tool prefix (`freevibes_*`) and environment variables (`FREEVIBES_*`)
+  all changed. The `meta-vibes-free` provider id is unchanged, since it names a
+  Meta product rather than this project. Anyone who already configured the
+  server must update their client entry and any `OPENVIBES_*` variables.
+- Crash-recovery tests now model two real server processes sharing one database,
+  including a regression test for the "reclaim another process's live job" bug.
+
+## [0.1.0] — 2026-11-10
+
+### Added
+
+- MCP server over stdio with nine tools: capabilities, generate image, generate
+  video, animate image, job status, list jobs, cancel job, usage limits, doctor.
+- `ProviderAdapter` interface and registry with explicit selection and no
+  fallback.
+- `meta-vibes-free` provider: reports capability status from dated official
+  evidence and returns a structured `BLOCKED` result from every generation path.
+  Sends no network request and fabricates no output.
+- Job orchestrator with an enforced state machine, event history and crash
+  recovery.
+- SQLite store in WAL mode with migrations and a busy timeout.
+- Deterministic offline prompt engine with clause ordering, de-duplication and
+  semantic validation.
+- Downloader with a streaming byte ceiling, timeout and host allowlist.
+- Media validator using magic bytes, with SHA-256 hashing and dimension reading.
+- Asset manager with path-traversal guard and atomic writes.
+- Installer for eight MCP clients: dry-run by default, timestamped backups,
+  preserved keys, managed TOML block.
+- 109 tests, strict TypeScript, GitHub Actions CI across three operating systems.
+- Documentation: `META-FEASIBILITY.md`, `ARCHITECTURE.md`, `PROVIDERS.md`,
+  `CLIENT-SETUP.md`.
+
+### Notes
+
+- **Meta Vibes generation is BLOCKED.** No legitimate unattended route exists:
+  Vibes is a consumer product with no published API, Meta Model API has no video
+  model, and its image model is paid. See `docs/META-FEASIBILITY.md`. No
+  production-ready claim is made for the Meta integration.
+
+[Unreleased]: https://github.com/itzmoksh01/Freevibes/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/itzmoksh01/Freevibes/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/itzmoksh01/Freevibes/releases/tag/v0.1.0
