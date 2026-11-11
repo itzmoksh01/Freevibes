@@ -1,5 +1,9 @@
 # Freevibes
 
+[![CI](https://github.com/itzmoksh01/Freevibes/actions/workflows/ci.yml/badge.svg)](https://github.com/itzmoksh01/Freevibes/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)](https://nodejs.org)
+
 A universal [Model Context Protocol](https://modelcontextprotocol.io) server that
 lets MCP-compatible coding agents — Claude Code, Muse Code, Codex, Zed, Cursor,
 VS Code and others — create AI images and videos from a natural-language request.
@@ -51,7 +55,7 @@ built, tested and ready for the day a permitted route appears.
 | Media validator (magic bytes, hashing) | Working |
 | Asset manager (atomic, content-checked) | Working |
 | Installer for 8 MCP clients | Working |
-| Test suite | 116 passing |
+| Test suite | 116 unit tests + 21-check end-to-end smoke test |
 | Meta generation | **BLOCKED** |
 
 ## Install
@@ -130,12 +134,17 @@ Logs go to **stderr**; stdout is reserved for the MCP protocol.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the pieces fit
 - [docs/PROVIDERS.md](docs/PROVIDERS.md) — writing a provider
 - [docs/CLIENT-SETUP.md](docs/CLIENT-SETUP.md) — per-client configuration
+- [CONTRIBUTING.md](CONTRIBUTING.md) — the honesty rule, and what gets closed
+- [SECURITY.md](SECURITY.md) — reporting, and what this project will never do
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — Contributor Covenant 2.1
+- [CHANGELOG.md](CHANGELOG.md) — what changed, and why
 
 ## Development
 
 ```bash
 npm run build      # compile
-npm test           # 116 tests
+npm test           # 116 unit tests
+npm run smoke      # end-to-end over real stdio, asserts the blocked contract
 npm run typecheck  # strict tsc, source and tests
 node dist/install/cli.js doctor
 ```

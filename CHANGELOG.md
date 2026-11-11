@@ -6,6 +6,27 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.2] — 2026-11-11
+
+### Fixed
+
+- **CI was red on every platform.** The workflow asserted `freevibes capabilities`
+  exited 0, but that command exits 1 while the provider is blocked — which is the
+  correct behaviour, so every job failed on a correct answer. Replaced with a real
+  end-to-end smoke test that asserts the blocked behaviour explicitly.
+
+### Added
+
+- `scripts/smoke.mjs` (`npm run smoke`): starts the built server over a real stdio
+  transport and asserts 21 things an agent depends on — nine tools advertised,
+  honest capability reporting with dated https sources, generation returning a
+  structured `BLOCKED` result, the attempt recorded as blocked, usage limits
+  unknown rather than invented, and the CLI agreeing with the server.
+- `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1).
+- Issue templates for bug reports and feature requests, a pull request template,
+  and Dependabot configuration for npm and GitHub Actions.
+- `prepublishOnly` now runs the smoke test as well.
+
 ## [0.1.1] — 2026-11-10
 
 ### Fixed
@@ -78,6 +99,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   model, and its image model is paid. See `docs/META-FEASIBILITY.md`. No
   production-ready claim is made for the Meta integration.
 
-[Unreleased]: https://github.com/itzmoksh01/Freevibes/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/itzmoksh01/Freevibes/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/itzmoksh01/Freevibes/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/itzmoksh01/Freevibes/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/itzmoksh01/Freevibes/releases/tag/v0.1.0
