@@ -6,6 +6,36 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-11-11
+
+### Added
+
+- **`vibes-unofficial` provider**: real image, video and image-to-video generation
+  through the user's own free Vibes account. It does not reimplement Meta's
+  private API; it drives [VibesAI-api](https://github.com/mir-ashiq/VibesAI-api),
+  a maintained Python sidecar that speaks those endpoints, refreshes the session
+  in the background and can re-login from `auth.meta.com` cookies, so cookies are
+  copied once rather than per job.
+- The provider is **off by default** (`FREEVIBES_ALLOW_UNOFFICIAL=true` required),
+  is never selected automatically, and reports its capabilities as `UNOFFICIAL` —
+  never `VERIFIED_WORKING` or officially supported. `docs/UNOFFICIAL-VIBES.md`
+  documents setup and states the risks plainly: possible breach of the Vibes
+  terms, breakage whenever Meta changes their web app, and a session cookie being
+  a live credential.
+- New `UNOFFICIAL` capability status, distinct from `BLOCKED`, so a working but
+  unsanctioned route can never be confused with a sanctioned one.
+- `RetrievedMedia.headers` and `AssetManager.downloadAndStore(headers)` so a
+  provider can authenticate its own media downloads (e.g. sidecar API key).
+- 23 tests against a mock implementing the sidecar's documented REST contract:
+  request shape, project reuse, polling, retrieval, 401/429 mapping, the opt-in
+  guard, and that the default provider stays blocked.
+
+### Notes
+
+- These tests prove this adapter's behaviour against the documented contract.
+  They do not prove Meta's live service works — no credentials are used and no
+  request leaves the machine. No verified-generation claim is made.
+
 ## [0.1.2] — 2026-11-11
 
 ### Fixed
@@ -104,7 +134,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   model, and its image model is paid. See `docs/META-FEASIBILITY.md`. No
   production-ready claim is made for the Meta integration.
 
-[Unreleased]: https://github.com/itzmoksh01/Freevibes/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/itzmoksh01/Freevibes/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/itzmoksh01/Freevibes/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/itzmoksh01/Freevibes/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/itzmoksh01/Freevibes/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/itzmoksh01/Freevibes/releases/tag/v0.1.0

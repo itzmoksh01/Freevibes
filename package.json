@@ -1,6 +1,6 @@
 {
   "name": "freevibes",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Universal MCP bridge for AI image and video generation from MCP-compatible coding agents.",
   "license": "Apache-2.0",
   "author": "Freevibes contributors",

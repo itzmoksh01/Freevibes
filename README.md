@@ -15,31 +15,44 @@ You → Claude Code: "Generate a cinematic 10-second video of an Indian warrior
      Claude Code ← /home/you/.freevibes/assets/warrior-20261110-144012-a3f9c1.mp4
 ```
 
-## Status: the infrastructure works; the Meta provider is blocked
+## Status: two providers, one honest about its limits
 
-**Read this before installing.** Freevibes does not generate media today.
+Freevibes ships two generation providers. You choose one; neither is a
+placeholder.
 
-The product was scoped around a user's own **free Meta Vibes entitlement**. After
-checking Meta's own documentation, no legitimate unattended route exists:
+### 1. `meta-vibes-free` — default, and blocked
 
-- **Vibes** (the consumer app and `vibes.ai`) has **no published API** — no
-  endpoint, no request schema, no OAuth client. It is a consumer product.
-- **Meta Model API** does have a documented image model (`muse-image-1.0`), but
-  it is **paid** ($0.01/image, no free tier), which free mode forbids.
-- **Meta Model API has no video-generation model at all.** Video is only an input
-  for understanding and segmentation.
-- Every public tool that does reach Vibes works by **copying a browser session
-  cookie** and replaying reverse-engineered private endpoints. Freevibes will not
-  do that.
+Meta publishes **no API** for Vibes: no endpoint, no request schema, no OAuth
+client. `Meta Model API` is a different product — it has a documented image model
+(`muse-image-1.0`) that is **paid** ($0.01/image, no free tier), and **no
+video-generation model at all**. Video is only an input, for understanding and
+segmentation.
 
-So the `meta-vibes-free` provider ships as a **real, honest BLOCKED adapter**. It
-answers capability queries accurately, refuses generation with a structured
-reason and a source URL, and never fabricates a result. Full evidence:
+So this provider is a **real, honest BLOCKED adapter**: it answers capability
+queries accurately, refuses generation with a structured reason and a source URL,
+and never fabricates a result. Full evidence:
 **[docs/META-FEASIBILITY.md](docs/META-FEASIBILITY.md)**.
 
-Everything else — the MCP server, tool contracts, job orchestrator, SQLite store,
-downloader, media validator, asset manager, installer, 109 tests and CI — is
-built, tested and ready for the day a permitted route appears.
+### 2. `vibes-unofficial` — opt-in, generates for real
+
+Drives [VibesAI-api](https://github.com/mir-ashiq/VibesAI-api), a maintained
+Python sidecar that speaks vibes.ai's private endpoints, keeps your session
+refreshed and can re-login automatically from `auth.meta.com` cookies — so you
+copy cookies **once**, not once per job.
+
+```text
+Coding agent → Freevibes (MCP) → HTTP → VibesAI-api sidecar → vibes.ai
+```
+
+It is reported as `UNOFFICIAL`, never as verified or supported, because Meta does
+not sanction it: it may breach the Vibes terms, can break whenever Meta changes
+their web app, and a session cookie is a live credential for your account. It is
+**off by default** and requires `FREEVIBES_ALLOW_UNOFFICIAL=true`. Setup and risks:
+**[docs/UNOFFICIAL-VIBES.md](docs/UNOFFICIAL-VIBES.md)**.
+
+The infrastructure — MCP server, tool contracts, orchestrator, SQLite store,
+downloader, media validator, asset manager, installer, tests and CI — is shared by
+both and fully tested.
 
 ## What is built
 
@@ -48,6 +61,7 @@ built, tested and ready for the day a permitted route appears.
 | MCP server over stdio, 9 tools | Working |
 | Provider interface + registry (no silent fallback) | Working |
 | `meta-vibes-free` provider | Working — returns structured `BLOCKED` |
+| `vibes-unofficial` provider | Working — opt-in, real generation via a sidecar |
 | Job orchestrator with crash recovery | Working |
 | SQLite job/asset store (WAL, migrations) | Working |
 | Prompt engine (deterministic, offline) | Working |
@@ -55,8 +69,9 @@ built, tested and ready for the day a permitted route appears.
 | Media validator (magic bytes, hashing) | Working |
 | Asset manager (atomic, content-checked) | Working |
 | Installer for 8 MCP clients | Working |
-| Test suite | 116 unit tests + 21-check end-to-end smoke test |
-| Meta generation | **BLOCKED** |
+| Test suite | 139 unit tests + 21-check end-to-end smoke test |
+| Meta generation, sanctioned | **BLOCKED** — no API exists |
+| Meta generation, unofficial | Working via opt-in sidecar |
 
 ## Install
 
@@ -106,7 +121,11 @@ All settings are environment variables; sensible defaults apply.
 | --- | --- | --- |
 | `FREEVIBES_MODE` | `free-meta-vibes` | Only supported mode |
 | `ALLOW_PAID_PROVIDERS` | `false` | `true` is **rejected** at startup |
-| `FREEVIBES_PROVIDER` | `meta-vibes-free` | Provider id |
+| `FREEVIBES_PROVIDER` | `meta-vibes-free` | `meta-vibes-free` or `vibes-unofficial` |
+| `FREEVIBES_ALLOW_UNOFFICIAL` | `false` | Required to load `vibes-unofficial` |
+| `FREEVIBES_VIBES_BASE_URL` | `http://127.0.0.1:8000` | VibesAI-api sidecar address |
+| `FREEVIBES_VIBES_API_KEY` | *(unset)* | `X-API-Key` for the sidecar |
+| `FREEVIBES_VIBES_PROJECT` | `Freevibes` | vibes.ai project to write into |
 | `FREEVIBES_DATA_DIR` | `~/.freevibes` | Database and staging |
 | `FREEVIBES_ASSET_DIR` | `~/.freevibes/assets` | Where finished media lands |
 | `FREEVIBES_JOB_STALE_MS` | job timeout + 60 s | When another process's job lease counts as abandoned |
@@ -131,6 +150,7 @@ Logs go to **stderr**; stdout is reserved for the MCP protocol.
 ## Documentation
 
 - [docs/META-FEASIBILITY.md](docs/META-FEASIBILITY.md) — the evidence, in full
+- [docs/UNOFFICIAL-VIBES.md](docs/UNOFFICIAL-VIBES.md) — the opt-in provider, setup and risks
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — how the pieces fit
 - [docs/PROVIDERS.md](docs/PROVIDERS.md) — writing a provider
 - [docs/CLIENT-SETUP.md](docs/CLIENT-SETUP.md) — per-client configuration
