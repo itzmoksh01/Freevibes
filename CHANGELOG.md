@@ -6,6 +6,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Dependabot bumps merged after review: `actions/checkout` 4 → 7, `actions/setup-node`
+  4 → 7, dev dependencies, and `zod` 3 → 4. CI (140 tests + smoke) passed on Ubuntu,
+  macOS and Windows for Node 20 and 22 with each of them.
+- `better-sqlite3` major bumps are now ignored by Dependabot. Version 13.x declares
+  `engines: node >=22` and drops Node 20, which this project supports; taking it
+  would be a breaking change. See the dependency policy in `CONTRIBUTING.md`.
+
 ## [0.2.0] — 2026-11-11
 
 ### Added
