@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/itzmoksh01/Freevibes/security/advisories/new
+    about: Please report security problems privately, never in a public issue.
+  - name: Why is generation reported as blocked?
+    url: https://github.com/itzmoksh01/Freevibes/blob/main/docs/META-FEASIBILITY.md
+    about: The evidence behind the blocked Meta Vibes provider, with sources and dates.
+  - name: How do I configure my client?
+    url: https://github.com/itzmoksh01/Freevibes/blob/main/docs/CLIENT-SETUP.md
+    about: Per-client setup for Claude Code, Muse Code, Codex, Zed, Cursor and VS Code.

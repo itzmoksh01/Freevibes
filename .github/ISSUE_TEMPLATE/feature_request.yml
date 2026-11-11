@@ -1,0 +1,57 @@
+name: Feature request
+description: Suggest a capability, a client integration, or an improvement
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please read [CONTRIBUTING.md](https://github.com/itzmoksh01/Freevibes/blob/main/CONTRIBUTING.md)
+        first. Requests that would require cookie harvesting, undocumented
+        endpoints, or browser automation of a consumer interface are out of scope
+        permanently — not for policy reasons that might change, but because they
+        break the user's account terms.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+      description: Describe the situation, not just the solution you have in mind.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Provider integration
+        - MCP tool contract
+        - Client installer / configuration
+        - Job orchestration or storage
+        - Media pipeline
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Project constraints
+      options:
+        - label: This request does not depend on reverse-engineered endpoints, cookie reuse, or automating a consumer UI
+          required: true

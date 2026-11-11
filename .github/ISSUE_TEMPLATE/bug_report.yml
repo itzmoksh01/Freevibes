@@ -1,0 +1,73 @@
+name: Bug report
+description: Something is broken, or behaves differently from what the docs say
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Before filing, please note: **generation being
+        unavailable is not a bug.** The Meta Vibes provider is blocked by design,
+        because no legitimate unattended route exists. See
+        [docs/META-FEASIBILITY.md](https://github.com/itzmoksh01/Freevibes/blob/main/docs/META-FEASIBILITY.md).
+        If `freevibes_get_capabilities` says BLOCKED, that is the correct answer.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what actually happened.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Configured the client with ...
+        2. Asked the agent ...
+        3. Observed ...
+    validations:
+      required: true
+
+  - type: input
+    id: client
+    attributes:
+      label: MCP client and version
+      placeholder: Muse Code 1.3.0, Claude Code 2.x, Zed 0.150, ...
+    validations:
+      required: true
+
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: output of `node -v`
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: Ubuntu 24.04, macOS 15, Windows 11, ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: doctor
+    attributes:
+      label: Output of `freevibes doctor`
+      description: Run `node dist/install/cli.js doctor` and paste the result.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Logs go to stderr. Run with `FREEVIBES_LOG_LEVEL=debug` for detail.
+      render: shell
+    validations:
+      required: false
