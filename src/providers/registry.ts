@@ -11,9 +11,10 @@ import type { FreevibesConfig } from '../config.js';
 import { ConfigError, GuardRejectedError } from '../errors.js';
 import { FixtureProvider } from './fixture.js';
 import { MetaVibesFreeProvider } from './meta-vibes-free.js';
+import { VibesUnofficialProvider } from './vibes-unofficial.js';
 import type { ProviderAdapter } from './types.js';
 
-export const KNOWN_PROVIDERS = ['meta-vibes-free', 'fixture'] as const;
+export const KNOWN_PROVIDERS = ['meta-vibes-free', 'vibes-unofficial', 'fixture'] as const;
 export type ProviderId = (typeof KNOWN_PROVIDERS)[number];
 
 export function createProvider(config: FreevibesConfig): ProviderAdapter {
@@ -33,6 +34,19 @@ export function createProvider(config: FreevibesConfig): ProviderAdapter {
 
   if (id === 'meta-vibes-free') {
     return new MetaVibesFreeProvider();
+  }
+
+  if (id === 'vibes-unofficial') {
+    if (!config.allowUnofficial) {
+      throw new GuardRejectedError(
+        'The vibes-unofficial provider is off by default. It reaches Meta Vibes through a ' +
+          'reverse-engineered route that Meta does not sanction and that may violate the Vibes ' +
+          'terms, so it must be enabled deliberately: set FREEVIBES_ALLOW_UNOFFICIAL=true and ' +
+          'run the VibesAI-api sidecar. See docs/UNOFFICIAL-VIBES.md.',
+        { requestedProvider: id },
+      );
+    }
+    return new VibesUnofficialProvider(config);
   }
 
   throw new ConfigError(

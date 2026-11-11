@@ -130,7 +130,13 @@ export class AssetManager {
   }
 
   /** Download a remote asset and store it, validating before it is named. */
-  async downloadAndStore(url: string, kind: MediaKind, jobId: string, prompt: string): Promise<MediaAsset> {
+  async downloadAndStore(
+    url: string,
+    kind: MediaKind,
+    jobId: string,
+    prompt: string,
+    headers?: Record<string, string>,
+  ): Promise<MediaAsset> {
     await this.ensureDirs();
 
     const tempPath = join(this.config.assetDir, `.incoming-${randomBytes(8).toString('hex')}`);
@@ -140,6 +146,7 @@ export class AssetManager {
       maxBytes: this.config.maxDownloadBytes,
       timeoutMs: this.config.downloadTimeoutMs,
       hostAllowlist: this.config.downloadHostAllowlist,
+      ...(headers ? { headers } : {}),
     });
 
     let asset: MediaAsset;

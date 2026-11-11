@@ -40,6 +40,8 @@ export interface RetrievedMedia {
   localPath?: string;
   kind: 'image' | 'video';
   mimeType?: string;
+  /** Extra request headers, e.g. an API key for a local sidecar. */
+  headers?: Record<string, string>;
 }
 
 export interface ProviderRetrieval {
@@ -54,6 +56,8 @@ export interface ProviderAdapter {
   readonly displayName: string;
   /** True for any provider that bills the user. Never active in free mode. */
   readonly paid: boolean;
+  /** True when the provider reaches the vendor through an unsanctioned route. */
+  readonly unofficial?: boolean;
 
   getCapabilities(): Promise<ProviderCapabilities>;
   getAccountStatus(): Promise<AccountStatus>;

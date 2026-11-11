@@ -180,7 +180,15 @@ export class Orchestrator {
         if (media.localPath) {
           stored.push(await assets.storeLocalFile(media.localPath, media.kind ?? args.mediaKind, job.id, args.composed.prompt));
         } else if (media.url) {
-          stored.push(await assets.downloadAndStore(media.url, media.kind ?? args.mediaKind, job.id, args.composed.prompt));
+          stored.push(
+            await assets.downloadAndStore(
+              media.url,
+              media.kind ?? args.mediaKind,
+              job.id,
+              args.composed.prompt,
+              media.headers,
+            ),
+          );
         } else {
           throw new FreevibesError('PROVIDER_ERROR', 'Retrieved media had neither a URL nor a local path.');
         }

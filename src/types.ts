@@ -16,6 +16,12 @@ export type CapabilityStatus =
   | 'OFFICIALLY_DOCUMENTED'
   | 'OFFICIALLY_AUTHORIZED_AUTOMATION'
   | 'VERIFIED_WORKING'
+  /**
+   * Reached through an unofficial route: works, but the vendor does not
+   * sanction it, it can break without notice, and using it may violate the
+   * vendor's terms. Never the default; always opt-in.
+   */
+  | 'UNOFFICIAL'
   | 'UNVERIFIED'
   | 'NOT_SUPPORTED'
   | 'BLOCKED';
@@ -23,6 +29,7 @@ export type CapabilityStatus =
 export const USABLE_STATUSES: readonly CapabilityStatus[] = [
   'VERIFIED_WORKING',
   'OFFICIALLY_AUTHORIZED_AUTOMATION',
+  'UNOFFICIAL',
 ];
 
 export interface CapabilityEvidence {

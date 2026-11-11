@@ -37,6 +37,21 @@ export interface FreevibesConfig {
   allowFixtureProvider: boolean;
   /** Refuse downloads from hosts outside this allowlist when non-empty. */
   downloadHostAllowlist: string[];
+
+  /**
+   * Allow the unofficial Vibes sidecar provider. Off by default: it depends on
+   * a reverse-engineered route that Meta does not sanction, so it is never
+   * enabled silently.
+   */
+  allowUnofficial: boolean;
+  /** Base URL of the local VibesAI-api sidecar. */
+  vibesBaseUrl: string;
+  /** Optional X-API-Key for the sidecar (VIBES_API_KEY on its side). */
+  vibesApiKey?: string;
+  /** Project name used for generated media inside vibes.ai. */
+  vibesProjectName: string;
+  /** Per-request timeout against the sidecar. */
+  vibesRequestTimeoutMs: number;
 }
 
 const DEFAULT_MAX_DOWNLOAD_BYTES = 512 * 1024 * 1024; // 512 MiB
@@ -44,6 +59,8 @@ const DEFAULT_DOWNLOAD_TIMEOUT_MS = 120_000;
 const DEFAULT_JOB_TIMEOUT_MS = 600_000;
 const DEFAULT_POLL_INTERVAL_MS = 2_000;
 const DEFAULT_JOB_STALE_MS = 660_000;
+const DEFAULT_VIBES_BASE_URL = 'http://127.0.0.1:8000';
+const DEFAULT_VIBES_TIMEOUT_MS = 120_000;
 
 type Env = Record<string, string | undefined>;
 
@@ -137,6 +154,9 @@ export function loadConfig(env: Env = process.env): FreevibesConfig {
     );
   }
 
+  const vibesApiKey = (env.FREEVIBES_VIBES_API_KEY ?? '').trim();
+  const vibesBaseUrl = (env.FREEVIBES_VIBES_BASE_URL ?? DEFAULT_VIBES_BASE_URL).trim().replace(/\/+$/, '');
+
   const allowlistRaw = env.FREEVIBES_DOWNLOAD_HOST_ALLOWLIST ?? '';
   const downloadHostAllowlist = allowlistRaw
     .split(',')
@@ -158,5 +178,10 @@ export function loadConfig(env: Env = process.env): FreevibesConfig {
     logLevel: parseLogLevel(env),
     allowFixtureProvider: fixtureRequested && isTestRun,
     downloadHostAllowlist,
+    allowUnofficial: parseBool(env, 'FREEVIBES_ALLOW_UNOFFICIAL', false),
+    vibesBaseUrl,
+    ...(vibesApiKey ? { vibesApiKey } : {}),
+    vibesProjectName: (env.FREEVIBES_VIBES_PROJECT ?? 'Freevibes').trim(),
+    vibesRequestTimeoutMs: parsePositiveInt(env, 'FREEVIBES_VIBES_TIMEOUT_MS', DEFAULT_VIBES_TIMEOUT_MS),
   };
 }
