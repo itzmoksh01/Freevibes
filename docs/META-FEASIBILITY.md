@@ -166,6 +166,13 @@ Vibes' terms.
 
 ## 5. Decision
 
+> **Update (v0.2.0):** an opt-in provider, `vibes-unofficial`, now exists for people
+> who accept the trade-offs. It drives the community reverse-engineered sidecar
+> rather than reimplementing it, is reported as `UNOFFICIAL`, and is off by
+> default. See [UNOFFICIAL-VIBES.md](UNOFFICIAL-VIBES.md). Nothing below changes:
+> there is still no sanctioned route, and the default provider still reports
+> `BLOCKED`.
+
 Per the product brief's feasibility decision engine, this is **Outcome C —
 BLOCKED** for the Vibes provider, with one clarifying note:
 
