@@ -9,7 +9,10 @@ export async function makeTempDir(prefix = 'freevibes-test-'): Promise<string> {
 }
 
 export async function cleanup(dir: string): Promise<void> {
-  await rm(dir, { recursive: true, force: true });
+  // Windows keeps a file handle open for a moment after SQLite closes, so an
+  // immediate unlink fails with EBUSY. Let fs.rm retry rather than failing a
+  // test that actually passed.
+  await rm(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
 }
 
 export async function testConfig(overrides: Record<string, string> = {}): Promise<FreevibesConfig> {

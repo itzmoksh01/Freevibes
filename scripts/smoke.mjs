@@ -136,7 +136,9 @@ async function main() {
     check('CLI prints valid JSON', cliJson !== null);
     check('CLI agrees the provider is blocked', cliJson?.operational === false);
   } finally {
-    await rm(dataDir, { recursive: true, force: true });
+    // Retries matter on Windows, where the database file stays locked briefly
+    // after the server process exits.
+    await rm(dataDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
   }
 
   console.log('');
