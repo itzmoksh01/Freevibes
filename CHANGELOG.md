@@ -10,10 +10,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- **Windows tests failed with `EBUSY`.** SQLite keeps the database file locked for
-  a moment after the connection closes, so cleaning up a test's temp directory
-  threw `resource busy or locked` on Windows runners even though the test itself
-  had passed. `fs.rm` now retries, in both the test helpers and the smoke test.
+- **Windows tests failed with `EBUSY`.** Two causes, both fixed. SQLite keeps the
+  database file locked briefly after close, so `fs.rm` now retries. And the test
+  teardown deleted a temp directory while a *second* context still held the same
+  database open, which blocked until the hook timed out; every connection is now
+  closed before any directory is removed.
 - **CI was red on every platform.** The workflow asserted `freevibes capabilities`
   exited 0, but that command exits 1 while the provider is blocked — which is the
   correct behaviour, so every job failed on a correct answer. Replaced with a real

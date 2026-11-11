@@ -15,9 +15,15 @@ async function build(overrides: Record<string, string> = {}): Promise<AppContext
 }
 
 afterEach(async () => {
-  for (const entry of contexts.splice(0)) {
-    closeContext(entry.ctx);
-    await cleanup(entry.dir);
+  const entries = contexts.splice(0);
+
+  // Close every database handle before deleting anything. Two contexts can
+  // share one database file, and on Windows a directory cannot be removed
+  // while another connection still holds the file open.
+  for (const entry of entries) closeContext(entry.ctx);
+
+  for (const dir of new Set(entries.map((e) => e.dir))) {
+    await cleanup(dir);
   }
 });
 

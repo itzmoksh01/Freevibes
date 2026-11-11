@@ -34,9 +34,10 @@ function textOf(result: { content: unknown }): string {
 }
 
 afterEach(async () => {
-  for (const entry of open.splice(0)) {
-    closeContext(entry.ctx);
-    await cleanup(entry.dir);
+  const entries = open.splice(0);
+  for (const entry of entries) closeContext(entry.ctx);
+  for (const dir of new Set(entries.map((e) => e.dir))) {
+    await cleanup(dir);
   }
 });
 
