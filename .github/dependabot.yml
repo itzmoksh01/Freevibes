@@ -15,6 +15,14 @@ updates:
         dependency-type: production
     commit-message:
       prefix: "chore(deps)"
+    ignore:
+      # better-sqlite3 13.x declares engines: node >=22 and therefore drops
+      # Node 20, which this project supports. Taking it would be a breaking
+      # change for anyone on the current LTS. 12.x is the newest line that
+      # still supports 20.x. Revisit when Node 20 support is deliberately
+      # dropped; see the note in CONTRIBUTING.md.
+      - dependency-name: "better-sqlite3"
+        update-types: ["version-update:semver-major"]
 
   # Keep the workflow actions current.
   - package-ecosystem: github-actions

@@ -98,6 +98,22 @@ provider will not fabricate.
   the free-mode guard, or the evidence table.
 - Update `CHANGELOG.md` under `## [Unreleased]`.
 
+## Dependency policy
+
+The supported Node floor is **20** (`engines` and the CI matrix), so a dependency
+that drops Node 20 is a breaking change and is not taken in a routine bump.
+
+Current constraint worth knowing about:
+
+| Package | Constraint |
+| --- | --- |
+| `better-sqlite3` | Stay on 11.x/12.x. **13.x declares `engines: node >=22`** and drops Node 20. Dependabot ignores its major bumps for this reason. |
+
+The database layer only uses `open`, `pragma`, `prepare` and `transaction`, so the
+code change for a future upgrade is trivial — the native build matrix is the real
+constraint. When Node 20 support is deliberately dropped, do it as its own
+changelog-noted change and remove the ignore rule at the same time.
+
 ## Security
 
 Do not open a public issue for a security problem. See [SECURITY.md](SECURITY.md).
